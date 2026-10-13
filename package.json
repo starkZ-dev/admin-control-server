@@ -1,0 +1,19 @@
+{
+  "name": "remotehost-server",
+  "version": "1.0.0",
+  "description": "Signaling + APK builder for RemoteHost fleet",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "firebase-admin": "^12.7.0",
+    "adm-zip": "^0.5.16",
+    "qrcode": "^1.5.4",
+    "@upstash/redis": "^1.34.3"
+  }
+}
