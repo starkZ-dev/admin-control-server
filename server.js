@@ -853,8 +853,32 @@ const server = http.createServer((req, res) => {
       return res.end('Fleet not found');
     }
   }
-  res.writeHead(200);
-  res.end('Remote Control Server Running!!');
+   // ── Landing page at root ────────────────────────────────────────
+  if (req.method === 'GET' && (req.url === '/' || req.url === '/index.html')) {
+    try {
+      const html = fs.readFileSync(path.join(__dirname, 'landing.html'), 'utf8');
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=300' });
+      return res.end(html);
+    } catch (_) {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      return res.end('RemoteLink Server Running');
+    }
+  }
+
+  // ── Public health/status for the landing page ──────────────────
+  if (req.method === 'GET' && req.url === '/health') {
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' });
+    return res.end(JSON.stringify({
+      ok: true,
+      region: process.env.RENDER_REGION || null,
+      uptimeMs: process.uptime() * 1000,
+      timestamp: Date.now(),
+    }));
+  }
+
+  // Fallback
+  res.writeHead(200, { 'Content-Type': 'text/plain' });
+  res.end('RemoteLink Server Running');
 });
 const wss = new WebSocket.Server({ server, maxPayload: 10 * 1024 * 1024 });
 const rooms = {};
