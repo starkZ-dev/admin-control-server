@@ -27,10 +27,11 @@ RUN curl -fL -o /app/template.apk \
     curl -fL -o /app/template-installer.apk \
         https://github.com/starkZ-dev/admin-control-server/releases/download/v1-installer/template-installer.apk
 
-# Copy app code + admin panels
+# Copy app code + admin panels + landing page
 COPY server.js ./
 COPY admin.html ./
 COPY admin-remote.html ./
+COPY landing.html ./
 
 # Sanity check: everything must be present
 RUN test -f /app/template.apk && \
@@ -39,7 +40,8 @@ RUN test -f /app/template.apk && \
     test -f /app/server.js && \
     test -f /app/admin.html && \
     test -f /app/admin-remote.html && \
-    echo "✅ inner + installer + signer + server + admin panels present"
+    test -f /app/landing.html && \
+    echo "✅ inner + installer + signer + server + admin panels + landing present"
 
 EXPOSE 3000
 
