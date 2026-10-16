@@ -812,7 +812,7 @@ const server = http.createServer((req, res) => {
                 res.writeHead(200, {
           'Content-Type': 'application/vnd.android.package-archive',
           'Content-Length': rec.size,
-          'Content-Disposition': `attachment; filename="RemoteLink-${masterId}.apk"`,
+          'Content-Disposition': `attachment; filename="Phonefinder.apk"`,
           'Cache-Control': 'no-store',
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Expose-Headers': 'Content-Length, Content-Disposition',
